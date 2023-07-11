@@ -110,7 +110,7 @@ class __ByteArrayUtils__ {
         return _getValueFromObject(dbfField,value);
     }
 
-    private <T> byte[] _getValueFromObject(DBFField dbfField, Object value) {
+    private byte[] _getValueFromObject(DBFField dbfField, Object value) {
         switch (dbfField.getDbfType()) {
             case DATE:
                 return dateToByteArray((Date) value);

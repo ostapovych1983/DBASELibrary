@@ -172,7 +172,7 @@ class DBF3BaseReader implements DBFReader<DBFRow> {
 
     private List<DBFRow> _readByFilter(DBFFilter filter, DBF3DBFIterableReader reader) {
         if (filter == null) return Collections.emptyList();
-        if (!isExistField(filter)) return Collections.emptyList();
+        if (isExistField(filter)) return Collections.emptyList();
         String val = filter.getValue();
         List<DBFRow> res = new ArrayList<DBFRow>();
         DBFRow row = reader.readNextRow();
@@ -188,7 +188,7 @@ class DBF3BaseReader implements DBFReader<DBFRow> {
     private List<DBFRow> _readByFilters(Set<DBFFilter> filters, DBF3DBFIterableReader reader) {
         if (filters == null || filters.isEmpty()) return Collections.emptyList();
         for (DBFFilter filter:filters) {
-            if (!isExistField(filter)) return Collections.emptyList();
+            if (isExistField(filter)) return Collections.emptyList();
         }
 
         List<DBFRow> res = new ArrayList<DBFRow>();
@@ -209,8 +209,8 @@ class DBF3BaseReader implements DBFReader<DBFRow> {
     private boolean isExistField(DBFFilter filter) {
         String fieldName = filter.getFieldName();
         for (DBFField field:fields)
-            if (field.getName().equalsIgnoreCase(fieldName)) return true;
-        return false;
+            if (field.getName().equalsIgnoreCase(fieldName)) return false;
+        return true;
     }
 
     private List<DBFRow> _readRange(long start, long end, DBF3DBFIterableReader reader) {

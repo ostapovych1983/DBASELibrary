@@ -13,7 +13,7 @@ public class UtilsTests {
         assertEquals("Wrong read column count ",expected_column_count,reader.getColumnCount());
         assertEquals("Wrong read row count ",expected_row_count,reader.getRowCount());
         long countedRowLooped = 0;
-        for (T dbfRow:reader){
+        for (T ignored :reader){
             countedRowLooped++;
             if (countedRowLooped > expected_row_count) throw new RuntimeException("There more row than expected");
         }

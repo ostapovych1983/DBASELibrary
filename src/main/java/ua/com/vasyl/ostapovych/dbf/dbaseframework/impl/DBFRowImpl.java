@@ -190,7 +190,7 @@ public class DBFRowImpl implements DBFRow {
             res.append("\"")
                     .append(fieldName)
                     .append("\" : \"")
-                    .append((""+val).trim())
+                    .append((String.valueOf(val)).trim())
                     .append("\" ,");
 
         }

@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.readerstest.utils.UtilsTests.getDBFTableByResourceName;
 
-public class EqualsFilterTest<T> {
+public class EqualsFilterTest {
 
     private DBFReader<DBFRow> reader;
 
