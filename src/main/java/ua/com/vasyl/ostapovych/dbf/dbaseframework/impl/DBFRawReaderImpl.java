@@ -33,7 +33,7 @@ class DBFRawReaderImpl implements DBFReader<Object[]> {
 
     private List<Object[]> toRawArray(List<DBFRow> readAllRows) {
         if (readAllRows == null) return Collections.emptyList();
-        List<Object[]> res = new ArrayList<Object[]>();
+        List<Object[]> res = new ArrayList<>();
         for (DBFRow row:readAllRows){
             res.add(row.toRawRow());
         }
