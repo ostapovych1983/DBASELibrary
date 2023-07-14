@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 
 public class CustomDBFReaderPropertyAnnotationTest extends AbstractDBFReaderTest<ExampleDBFTablePropertyAnnotation> {
 
-
     @Override
     protected void compare(ExampleDBFTablePropertyAnnotation row, String[] strings) {
         Assert.assertEquals(convert(strings),row);

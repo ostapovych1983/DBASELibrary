@@ -5,9 +5,10 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.DBASEFactory;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFReader;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFWriter;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.*;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.utils.FileUtils;
+
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -34,7 +35,7 @@ public class WriterRawRowsTest {
             rows[i][4] = new Date();
             rows[i][5] = true;
         }
-        File fileName = FileUtils.createTemporaryFile();
+        File fileName = createTemporaryFile();
         DBFWriter writer = DBASEFactory.dbf3().getDBFWriter(fileName);
         writer.writeRows(fields,rows);
 
@@ -67,5 +68,16 @@ public class WriterRawRowsTest {
     private boolean compareDate(Date date,Date thatDate) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         return sdf.format(date).equalsIgnoreCase(sdf.format(thatDate));
+    }
+
+    public static File createTemporaryFile() {
+        File fileName;
+        try {
+            fileName = File.createTempFile("DBF-",".tmp");
+            fileName.deleteOnExit();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return fileName;
     }
 }

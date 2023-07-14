@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 
 public class CustomDBFReaderTest extends AbstractDBFReaderTest<ExampleDBFTable> {
 
-
     @Override
     protected void compare(ExampleDBFTable row, String[] strings) {
         Assert.assertEquals(convert(strings),row);

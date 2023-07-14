@@ -27,7 +27,7 @@ public class DBF3Impl implements DBF3 {
 
     @Override
     public <T> DBFReader<T> getCustomDBFReader(String dbfFileName,Class<T> type) {
-        return new DBFReaderCustomImpl<T>(dbfFileName,options,type);
+        return new DBFAnnotatedReader<>(dbfFileName, options, type);
     }
 
     @Override

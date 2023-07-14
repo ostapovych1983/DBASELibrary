@@ -6,6 +6,8 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.enums.DBFCodePage;
 public class DBFOptions {
     private boolean readDeleted = true;
     private boolean readCodePageFromTable = false;
+
+    private boolean validateAnotation = false;
     private DBFCodePage codePage;
 
     public static DBFOptions defaultOptions() {
@@ -37,5 +39,13 @@ public class DBFOptions {
 
     public void setReadCodePageFromTable(boolean readCodePageFromTable) {
         this.readCodePageFromTable = readCodePageFromTable;
+    }
+
+    public boolean isValidateAnotation() {
+        return validateAnotation;
+    }
+
+    public void setValidateAnotation(boolean validateAnotation) {
+        this.validateAnotation = validateAnotation;
     }
 }

@@ -81,6 +81,7 @@ public abstract class AbstractDBFReaderTest<T> {
         checkDataRow(reader,examples);
     }
 
+
     protected abstract void compare(T row, String[] strings);
     protected abstract DBFReader<T> getReader(String dbfFile, DBFOptions options);
 

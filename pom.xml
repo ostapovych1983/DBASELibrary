@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ua.com.vasyl.ostapovych.dbf</groupId>
     <artifactId>DBASELibrary</artifactId>
-    <version>6.1.0.0-SNAPSHOT</version>
+    <version>8.1.0.0-SNAPSHOT</version>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/junit/junit -->
@@ -15,6 +15,13 @@
             <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>ua.com.vasyl.ostapovych.utils</groupId>
+            <artifactId>OVUtils</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -22,10 +29,10 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
-                <version>3.1</version>
+                <version>3.10.1</version>
             </plugin>
         </plugins>
     </build>

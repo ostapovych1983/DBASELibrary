@@ -14,12 +14,13 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.utils.FileUtils.createTemporaryFile;
+import static ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.writertest.WriterRawRowsTest.createTemporaryFile;
+
 @SuppressWarnings({"SpellCheckingInspection"})
 public class WriterStrategyTest {
     @Test
     public void testAnnotatedGettersStrategy(){
-        List<ExampleAnnotatedGetters> rows = new ArrayList<ExampleAnnotatedGetters>();
+        List<ExampleAnnotatedGetters> rows = new ArrayList<>();
         int rowsCount = 250;
         for (int i=0;i<rowsCount;i++){
             ExampleAnnotatedGetters row = new ExampleAnnotatedGetters();
@@ -57,7 +58,7 @@ public class WriterStrategyTest {
 
     @Test
     public void testAnnotatedFieldStrategy(){
-        List<ExampleAnnotatedFields> rows = new ArrayList<ExampleAnnotatedFields>();
+        List<ExampleAnnotatedFields> rows = new ArrayList<>();
         int rowsCount = 250;
         for (int i=0;i<rowsCount;i++){
             ExampleAnnotatedFields row = new ExampleAnnotatedFields();
@@ -95,7 +96,7 @@ public class WriterStrategyTest {
 
     @Test
     public void testGetterNameStrategy(){
-        List<ExampleByGettersName> rows = new ArrayList<ExampleByGettersName>();
+        List<ExampleByGettersName> rows = new ArrayList<>();
         int rowsCount = 250;
         for (int i=0;i<rowsCount;i++){
             ExampleByGettersName row = new ExampleByGettersName();
@@ -133,7 +134,7 @@ public class WriterStrategyTest {
 
     @Test
     public void testFieldNameStrategy(){
-        List<ExampleByFieldName> rows = new ArrayList<ExampleByFieldName>();
+        List<ExampleByFieldName> rows = new ArrayList<>();
         int rowsCount = 250;
         for (int i=0;i<rowsCount;i++){
             ExampleByFieldName row = new ExampleByFieldName();
@@ -171,7 +172,7 @@ public class WriterStrategyTest {
 
     @Test
     public void testAutomatedStrategyWithAnnotationSomeGetters(){
-        List<ExampleAutomateAnnotatedGetters> rows = new ArrayList<ExampleAutomateAnnotatedGetters>();
+        List<ExampleAutomateAnnotatedGetters> rows = new ArrayList<>();
         int rowsCount = 250;
         for (int i=0;i<rowsCount;i++){
             ExampleAutomateAnnotatedGetters row = new ExampleAutomateAnnotatedGetters();
@@ -205,7 +206,7 @@ public class WriterStrategyTest {
 
     @Test
     public void testAutomatedStrategyWithAnnotationSomeFields(){
-        List<ExampleAutomatedFields> rows = new ArrayList<ExampleAutomatedFields>();
+        List<ExampleAutomatedFields> rows = new ArrayList<>();
         int rowsCount = 250;
         for (int i=0;i<rowsCount;i++){
             ExampleAutomatedFields row = new ExampleAutomatedFields();
@@ -239,7 +240,7 @@ public class WriterStrategyTest {
 
     @Test
     public void testAutomatedStrategyWithAnnotatedFieldAndGetter(){
-        List<ExampleAutomatedFieldAndGetterOverride> rows = new ArrayList<ExampleAutomatedFieldAndGetterOverride>();
+        List<ExampleAutomatedFieldAndGetterOverride> rows = new ArrayList<>();
         int rowsCount = 250;
         for (int i=0;i<rowsCount;i++){
             ExampleAutomatedFieldAndGetterOverride row = new ExampleAutomatedFieldAndGetterOverride();
@@ -273,7 +274,7 @@ public class WriterStrategyTest {
 
     @Test
     public void testAutomatedStrategyWithAnnotatedFieldAndGetterUnion(){
-        List<ExampleAutomatedFieldAndGetterUnion> rows = new ArrayList<ExampleAutomatedFieldAndGetterUnion>();
+        List<ExampleAutomatedFieldAndGetterUnion> rows = new ArrayList<>();
         int rowsCount = 250;
         for (int i=0;i<rowsCount;i++){
             ExampleAutomatedFieldAndGetterUnion row = new ExampleAutomatedFieldAndGetterUnion();

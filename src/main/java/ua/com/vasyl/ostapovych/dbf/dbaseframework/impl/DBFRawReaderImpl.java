@@ -1,12 +1,11 @@
 package ua.com.vasyl.ostapovych.dbf.dbaseframework.impl;
 
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.DBASEFactory;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.filters.DBFFilter;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.DBFFieldNotFoundException;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.DBFField;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbfoptions.DBFOptions;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.filters.DBFFilter;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFReader;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFRow;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.*;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.DBFField;
 
 import java.util.*;
 
@@ -14,7 +13,7 @@ class DBFRawReaderImpl implements DBFReader<Object[]> {
     private final DBFReader<DBFRow> baseReader;
 
     DBFRawReaderImpl(String dbfFileName, DBFOptions options) {
-        baseReader = DBASEFactory.dbf3(options).getDBFReader(dbfFileName);
+        baseReader =  new DBF3BaseReader(dbfFileName,options);
     }
 
     @Override
