@@ -9,6 +9,7 @@ public class DBASEFactory {
         DBFOptions options = new DBFOptions();
         options.setCodePage(DBFCodePage.NONE);
         options.setReadDeleted(true);
+        options.setValidateAnotation(true);
         return new DBF3Impl(options);
     }
     public static DBF3 dbf3(DBFOptions options){

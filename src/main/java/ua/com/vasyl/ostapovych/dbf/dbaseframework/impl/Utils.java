@@ -309,8 +309,13 @@ abstract class Utils {
         int decimalSize = field.getDecimalSize();
         String valAsString = new String(rawValue).trim();
         if (valAsString.isEmpty()) return 0;
-        if (decimalSize ==0) return Integer.parseInt(valAsString);
-        return Double.parseDouble(valAsString);
+        try {
+            if (decimalSize == 0) return Integer.parseInt(valAsString);
+            return Double.parseDouble(valAsString);
+        }catch (NumberFormatException e){
+            if (decimalSize == 0) return Integer.parseInt("0");
+            else return Float.parseFloat("0.0");
+        }
     }
 
     static private Float getFloatFromByteArray(byte[] rawValue) {

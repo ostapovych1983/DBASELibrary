@@ -15,13 +15,6 @@
             <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>ua.com.vasyl.ostapovych.utils</groupId>
-            <artifactId>OVUtils</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
