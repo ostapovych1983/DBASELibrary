@@ -13,7 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
 @SuppressWarnings({"SpellCheckingInspection"})
 public class WriterRawRowsTest {
     @Test
@@ -45,8 +46,43 @@ public class WriterRawRowsTest {
             assertTrue(isContainsRow(row,readRows));
         }
         reader.close();
-
     }
+
+    @Test
+    public void testWriteRawDBFRowWithEmptyRow(){
+        DBFField [] fields = new DBFField[6];
+        fields[0] = new CharacterField("CFIELD",(short)30);
+        fields[1] = new FloatField("FFIELD",15,3);
+        fields[2] = new NumericField("NIFIELD",5,0);
+        fields[3] = new NumericField("NDFIELD",10,3);
+        fields[4] = new DateField("DFIELD");
+        fields[5] = new LogicalField("LFIELD");
+
+        Object[][]  rows  = new Object[1][6];
+        rows[0][0] = null;
+        rows[0][1] = null;
+        rows[0][2] = null;
+        rows[0][3] = null;
+        rows[0][4] = null;
+        rows[0][5] = null;
+
+        File fileName = createTemporaryFile();
+        DBFWriter writer = DBASEFactory.dbf3().getDBFWriter(fileName);
+        writer.writeRows(fields,rows);
+        System.out.println(fileName);
+        DBFReader<Object[]> reader = DBASEFactory.dbf3().getDBFRawReader(fileName.getAbsolutePath());
+        List<Object[]> readRows = reader.readAllRows();
+        assertEquals(1,readRows.size());
+        Object[] row = readRows.get(0);
+        assertNull(row[0]);
+        assertEquals(0.0f,(float)row[1],0.0000001);
+        assertEquals(0,(int)row[2]);
+        assertEquals(0.0,(double)row[3],0.000000001);
+        assertNull(row[4]);
+        assertFalse((boolean) row[5]);
+        reader.close();
+    }
+
 
     private boolean isContainsRow(Object[] row, List<Object[]> readRows) {
         t:for (Object[] readRow:readRows){

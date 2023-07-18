@@ -38,6 +38,9 @@ abstract class Utils {
         switch (field.getDbfType()){
             case CHARACTER:
             case UNKNOWN:
+                if (isNullByteArray(rawValue)){
+                    return null;
+                }
                 return new String (rawValue,dbfCodePage.getJavaCharSet()).trim();
             case DATE: return getDateFromBytes(rawValue);
             case FLOAT: return getFloatFromByteArray(rawValue);
@@ -314,23 +317,44 @@ abstract class Utils {
             return Double.parseDouble(valAsString);
         }catch (NumberFormatException e){
             if (decimalSize == 0) return Integer.parseInt("0");
-            else return Float.parseFloat("0.0");
+            else return Double.parseDouble("0.0");
         }
     }
 
     static private Float getFloatFromByteArray(byte[] rawValue) {
         String valAsString = new String(rawValue).trim();
         if (valAsString.isEmpty()) return 0.0f;
-        return Float.parseFloat(valAsString);
+        try {
+            return Float.parseFloat(valAsString);
+        }catch (NumberFormatException e){
+            return 0.0f;
+        }
     }
 
     static private Date getDateFromBytes(byte[] rawValue) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
         try {
+            if (isNullByteArray(rawValue)){
+                return null;
+            }
+            String dateAsString = new String(rawValue);
+            if (dateAsString.isEmpty()){
+                return null;
+            }
             return simpleDateFormat.parse(new String(rawValue));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static boolean isNullByteArray(byte[] bytes) {
+        if (bytes == null){
+            return true;
+        }
+        for (byte b:bytes){
+            if (b != 0) return false;
+        }
+        return true;
     }
 
     private static <T> DBFField[] _automaticStrategy(Class<T> tClass) {
@@ -611,7 +635,7 @@ abstract class Utils {
 
     static byte[] dateToByteArray(Date date) {
         byte[] res = new byte[8];
-        if (date == null) return new byte[0];
+        if (date == null) return res;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DBF_DATE_FORMAT);
         String dateAsString = simpleDateFormat.format(date);
         byte[] dateAsByteArray = dateAsString.getBytes();
@@ -624,6 +648,7 @@ abstract class Utils {
     }
 
     private static byte[] booleanToByteArray(Boolean asLogic) {
+        if (asLogic == null) asLogic = Boolean.FALSE;
         byte[] res = new byte[1];
         res[0] = (byte) (asLogic ? 84:70);
         return res;
@@ -647,12 +672,7 @@ abstract class Utils {
 
     private static byte[] stringToByteArray(String value, DBFField f) {
         if (value == null || value.isEmpty()){
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i=0;i<f.getSize();i++){
-
-                stringBuilder.append(0x00);
-            }
-            return stringBuilder.toString().getBytes();
+            return new byte[f.getSize()];
         }
         if (value.length() > f.getSize()){
             throw new DBFIllegalValueException(String.format("Cannot set string value %s to field %s. Size value = %s. Size field = %s",value,f.getName(),value.length(),f.getSize()));
