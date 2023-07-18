@@ -8,6 +8,8 @@ public class DBFOptions {
     private boolean readCodePageFromTable = false;
 
     private boolean validateAnotation = false;
+
+    private boolean isEnableLog = true;
     private DBFCodePage codePage;
 
     public static DBFOptions defaultOptions() {
@@ -47,5 +49,24 @@ public class DBFOptions {
 
     public void setValidateAnotation(boolean validateAnotation) {
         this.validateAnotation = validateAnotation;
+    }
+
+    public boolean isEnableLog() {
+        return isEnableLog;
+    }
+
+    public void setEnableLog(boolean enableLog) {
+        isEnableLog = enableLog;
+    }
+
+    @Override
+    public String toString() {
+        return "DBFOptions{" +
+                "readDeleted=" + readDeleted +
+                ", readCodePageFromTable=" + readCodePageFromTable +
+                ", validateAnotation=" + validateAnotation +
+                ", isEnableLog=" + isEnableLog +
+                ", codePage=" + codePage +
+                '}';
     }
 }

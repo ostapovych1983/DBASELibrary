@@ -5,6 +5,8 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.annotations.DBFColumn;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.annotations.DBFTable;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.types.DBFType;
 
+import java.util.Objects;
+
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.writertest.examples.with_annotations.ExampleWithOneStringColumn.CHARACTER_EXAMPLE_TABLE_NAME;
 
 @DBFTable(name = CHARACTER_EXAMPLE_TABLE_NAME)
@@ -37,7 +39,7 @@ public class ExampleWithOneStringColumn {
 
         ExampleWithOneStringColumn that = (ExampleWithOneStringColumn) o;
 
-        return character_field != null ? character_field.equals(that.character_field) : that.character_field == null;
+        return Objects.equals(character_field, that.character_field);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces;
 
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.DBFRow;
+
 import java.io.File;
 
 public interface DBF3 {

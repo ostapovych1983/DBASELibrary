@@ -1,5 +1,7 @@
 package ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.writertest.examples.without_annotation;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
 public class ExampleOneWithFieldWithoutAnnotation<T> {
 
@@ -25,7 +27,7 @@ public class ExampleOneWithFieldWithoutAnnotation<T> {
 
         ExampleOneWithFieldWithoutAnnotation<?> that = (ExampleOneWithFieldWithoutAnnotation<?>) o;
 
-        return t_field != null ? t_field.equals(that.t_field) : that.t_field == null;
+        return Objects.equals(t_field, that.t_field);
     }
 
     @Override

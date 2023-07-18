@@ -1,6 +1,8 @@
 package ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.readerstest.customreadertest.examples;
 
 import java.util.Date;
+import java.util.Objects;
+
 @SuppressWarnings("unused")
 public class ExampleDBFTableWithoutAnnotation {
 
@@ -66,12 +68,12 @@ public class ExampleDBFTableWithoutAnnotation {
 
         ExampleDBFTableWithoutAnnotation that = (ExampleDBFTableWithoutAnnotation) o;
 
-        if (char_f != null ? !char_f.equals(that.char_f) : that.char_f != null) return false;
-        if (num_int_f != null ? !num_int_f.equals(that.num_int_f) : that.num_int_f != null) return false;
-        if (num_dbl_f != null ? !num_dbl_f.equals(that.num_dbl_f) : that.num_dbl_f != null) return false;
-        if (date_f != null ? !date_f.equals(that.date_f) : that.date_f != null) return false;
-        if (float_f != null ? !float_f.equals(that.float_f) : that.float_f != null) return false;
-        return logic_f != null ? logic_f.equals(that.logic_f) : that.logic_f == null;
+        if (!Objects.equals(char_f, that.char_f)) return false;
+        if (!Objects.equals(num_int_f, that.num_int_f)) return false;
+        if (!Objects.equals(num_dbl_f, that.num_dbl_f)) return false;
+        if (!Objects.equals(date_f, that.date_f)) return false;
+        if (!Objects.equals(float_f, that.float_f)) return false;
+        return Objects.equals(logic_f, that.logic_f);
     }
 
     @Override

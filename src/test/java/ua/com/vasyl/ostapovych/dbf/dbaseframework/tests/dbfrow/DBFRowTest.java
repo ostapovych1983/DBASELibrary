@@ -2,10 +2,9 @@ package ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.dbfrow;
 
 import org.junit.Before;
 import org.junit.Test;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFRow;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.DBFField;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.LogicalField;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.DBFRowImpl;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.DBFRow;
 
 import java.util.UUID;
 
@@ -18,7 +17,7 @@ public class DBFRowTest {
 
     @Before
     public void init(){
-        row = new DBFRowImpl(prepareFieldMap(),false);
+        row = new DBFRow(prepareFieldMap(),false);
     }
 
     @Test

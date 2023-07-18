@@ -6,6 +6,7 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.types.DBFType;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 @SuppressWarnings({"SpellCheckingInspection","unused"})
 @DBFTable
@@ -79,16 +80,16 @@ public class ExampleWithAllTypeFields {
 
         ExampleWithAllTypeFields that = (ExampleWithAllTypeFields) o;
 
-        if (character_field != null ? !character_field.equals(that.character_field) : that.character_field != null)
+        if (!Objects.equals(character_field, that.character_field))
             return false;
-        if (float_field != null ? !float_field.equals(that.float_field) : that.float_field != null) return false;
-        if (numeric_integer_field != null ? !numeric_integer_field.equals(that.numeric_integer_field) : that.numeric_integer_field != null)
+        if (!Objects.equals(float_field, that.float_field)) return false;
+        if (!Objects.equals(numeric_integer_field, that.numeric_integer_field))
             return false;
-        if (numeric_double_field != null ? !numeric_double_field.equals(that.numeric_double_field) : that.numeric_double_field != null)
+        if (!Objects.equals(numeric_double_field, that.numeric_double_field))
             return false;
         if (date_field != null )
             if ( !compareDate(that.date_field)) return false;
-        return logicalField != null ? logicalField.equals(that.logicalField) : that.logicalField == null;
+        return Objects.equals(logicalField, that.logicalField);
     }
 
     @Override

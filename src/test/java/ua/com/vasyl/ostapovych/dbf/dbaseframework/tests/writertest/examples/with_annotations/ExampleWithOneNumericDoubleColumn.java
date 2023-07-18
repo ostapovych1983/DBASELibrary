@@ -4,6 +4,8 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.annotations.DBFColumn;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.annotations.DBFTable;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.types.DBFType;
 
+import java.util.Objects;
+
 @DBFTable
 @SuppressWarnings("unused")
 public class ExampleWithOneNumericDoubleColumn {
@@ -33,7 +35,7 @@ public class ExampleWithOneNumericDoubleColumn {
 
         ExampleWithOneNumericDoubleColumn that = (ExampleWithOneNumericDoubleColumn) o;
 
-        return double_field != null ? double_field.equals(that.double_field) : that.double_field == null;
+        return Objects.equals(double_field, that.double_field);
     }
 
     @Override

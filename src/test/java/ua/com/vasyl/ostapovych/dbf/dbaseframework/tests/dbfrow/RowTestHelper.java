@@ -1,7 +1,8 @@
 package ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.dbfrow;
 
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFRow;
+
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.DBFMap;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.DBFRow;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.*;
 
 import java.util.Calendar;

@@ -5,6 +5,7 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.types.DBFType;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 public class ExampleDBFTablePropertyAnnotation {
 
@@ -76,12 +77,12 @@ public class ExampleDBFTablePropertyAnnotation {
 
         ExampleDBFTablePropertyAnnotation that = (ExampleDBFTablePropertyAnnotation) o;
 
-        if (char_f != null ? !char_f.equals(that.char_f) : that.char_f != null) return false;
-        if (num_int != null ? !num_int.equals(that.num_int) : that.num_int != null) return false;
-        if (num_double != null ? !num_double.equals(that.num_double) : that.num_double != null) return false;
+        if (!Objects.equals(char_f, that.char_f)) return false;
+        if (!Objects.equals(num_int, that.num_int)) return false;
+        if (!Objects.equals(num_double, that.num_double)) return false;
         if (date != null ? !compareDate(that.date) : that.date != null) return false;
-        if (float_f != null ? !float_f.equals(that.float_f) : that.float_f != null) return false;
-        return logical != null ? logical.equals(that.logical) : that.logical == null;
+        if (!Objects.equals(float_f, that.float_f)) return false;
+        return Objects.equals(logical, that.logical);
     }
 
     @Override

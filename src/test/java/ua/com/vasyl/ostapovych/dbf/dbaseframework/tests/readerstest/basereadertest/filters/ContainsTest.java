@@ -1,8 +1,8 @@
 package ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.readerstest.basereadertest.filters;
 
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.DBASEFactory;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.DBFRow;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFReader;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFRow;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.readerstest.abstractreaderstest.filters.AbstractContainsTest;
 
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.readerstest.utils.UtilsTests.getDBFTableByResourceName;

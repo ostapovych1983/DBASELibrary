@@ -4,6 +4,7 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.annotations.DBFColumn;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.types.DBFType.*;
 
@@ -80,12 +81,12 @@ public class ExampleAutomatedFieldAndGetterOverride {
 
         ExampleAutomatedFieldAndGetterOverride that = (ExampleAutomatedFieldAndGetterOverride) o;
 
-        if (characterField != null ? !characterField.equals(that.characterField) : that.characterField != null)
+        if (!Objects.equals(characterField, that.characterField))
             return false;
-        if (floatField != null ? !floatField.equals(that.floatField) : that.floatField != null) return false;
-        if (integerField != null ? !integerField.equals(that.integerField) : that.integerField != null) return false;
-        if (doubleField != null ? !doubleField.equals(that.doubleField) : that.doubleField != null) return false;
-        if (booleanField != null ? !booleanField.equals(that.booleanField) : that.booleanField != null) return false;
+        if (!Objects.equals(floatField, that.floatField)) return false;
+        if (!Objects.equals(integerField, that.integerField)) return false;
+        if (!Objects.equals(doubleField, that.doubleField)) return false;
+        if (!Objects.equals(booleanField, that.booleanField)) return false;
         return dateField != null ? compareDate(that.dateField) : that.dateField == null;
     }
 

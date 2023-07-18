@@ -1,9 +1,9 @@
-package ua.com.vasyl.ostapovych.dbf.dbaseframework.impl;
+package ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.readers;
 
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.DBFRow;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.filters.DBFFilter;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbfoptions.DBFOptions;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFReader;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFRow;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.enums.DBFGenerateStrategies;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.DBFField;
 
@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Set;
 
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.api.validators.Validators.validateMetaDataDBF;
-import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.Utils.*;
+import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.readers.ReadUtils.*;
+import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.utils.DBFUtils.checkStrategy;
+
 
 class DBFAnnotatedReader<T> implements DBFReader<T> {
     private final Class<T> type;

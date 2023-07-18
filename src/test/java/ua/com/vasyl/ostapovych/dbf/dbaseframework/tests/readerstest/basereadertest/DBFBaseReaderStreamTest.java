@@ -3,9 +3,9 @@ package ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.readerstest.basereadert
 import org.junit.Assert;
 import org.junit.Test;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.DBASEFactory;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.DBFRow;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbfoptions.DBFOptions;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFReader;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFRow;
 
 import java.util.List;
 import java.util.stream.Collectors;

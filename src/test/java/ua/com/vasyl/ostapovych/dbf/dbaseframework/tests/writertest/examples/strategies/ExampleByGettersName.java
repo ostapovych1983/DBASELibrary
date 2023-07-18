@@ -5,6 +5,7 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.enums.DBFGenerateStrat
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 @DBFTable(accessMode =  DBFGenerateStrategies.GETTERS_NAME)
 @SuppressWarnings({"unused","SpellCheckingInspection"})
@@ -71,12 +72,12 @@ public class ExampleByGettersName {
 
         ExampleByGettersName that = (ExampleByGettersName) o;
 
-        if (cField != null ? !cField.equals(that.cField) : that.cField != null)
+        if (!Objects.equals(cField, that.cField))
             return false;
-        if (fField != null ? !fField.equals(that.fField) : that.fField != null) return false;
-        if (iField != null ? !iField.equals(that.iField) : that.iField != null) return false;
-        if (dField != null ? !dField.equals(that.dField) : that.dField != null) return false;
-        if (bField != null ? !bField.equals(that.bField) : that.bField != null) return false;
+        if (!Objects.equals(fField, that.fField)) return false;
+        if (!Objects.equals(iField, that.iField)) return false;
+        if (!Objects.equals(dField, that.dField)) return false;
+        if (!Objects.equals(bField, that.bField)) return false;
         return dtField != null ? compareDate(that.dtField) : that.dtField == null;
     }
 

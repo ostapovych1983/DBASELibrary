@@ -3,9 +3,9 @@ package ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.readerstest.basereadert
 import org.junit.Before;
 import org.junit.Test;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.DBASEFactory;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.DBFRow;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.filters.DBFFilter;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFReader;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFRow;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.filters.DBFilterOperation;
 
 import java.text.ParseException;

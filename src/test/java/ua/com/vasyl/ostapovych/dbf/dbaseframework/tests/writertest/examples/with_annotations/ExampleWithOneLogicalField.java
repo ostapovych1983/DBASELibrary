@@ -4,6 +4,8 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.annotations.DBFColumn;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.annotations.DBFTable;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.types.DBFType;
 
+import java.util.Objects;
+
 @SuppressWarnings({"SpellCheckingInspection","unused"})
 @DBFTable
 public class ExampleWithOneLogicalField {
@@ -29,7 +31,7 @@ public class ExampleWithOneLogicalField {
         if (o == null || getClass() != o.getClass()) return false;
 
         ExampleWithOneLogicalField that = (ExampleWithOneLogicalField) o;
-        return logical_field != null ? logical_field.equals(that.logical_field) : that.logical_field == null;
+        return Objects.equals(logical_field, that.logical_field);
     }
 
     @Override

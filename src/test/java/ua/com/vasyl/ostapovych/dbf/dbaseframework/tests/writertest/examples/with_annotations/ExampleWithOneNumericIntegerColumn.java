@@ -4,6 +4,8 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.annotations.DBFColumn;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.annotations.DBFTable;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.types.DBFType;
 
+import java.util.Objects;
+
 @SuppressWarnings({"SpellCheckingInspection","unused"})
 @DBFTable
 public class ExampleWithOneNumericIntegerColumn {
@@ -31,7 +33,7 @@ public class ExampleWithOneNumericIntegerColumn {
 
         ExampleWithOneNumericIntegerColumn that = (ExampleWithOneNumericIntegerColumn) o;
 
-        return integer_field != null ? integer_field.equals(that.integer_field) : that.integer_field == null;
+        return Objects.equals(integer_field, that.integer_field);
     }
 
     @Override
