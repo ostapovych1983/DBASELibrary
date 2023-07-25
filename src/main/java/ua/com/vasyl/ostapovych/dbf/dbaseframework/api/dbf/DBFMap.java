@@ -12,9 +12,9 @@ public class DBFMap implements Map<DBFField,Object>{
     private int currentIndex;
 
     public DBFMap(){
-        map = new LinkedHashMap<DBFField, Object>();
-        mapFields = new HashMap<String, DBFField>();
-        mapIndexFields = new HashMap<Integer, DBFField>();
+        map = new LinkedHashMap<>();
+        mapFields = new HashMap<>();
+        mapIndexFields = new HashMap<>();
         currentIndex = 0;
     }
 

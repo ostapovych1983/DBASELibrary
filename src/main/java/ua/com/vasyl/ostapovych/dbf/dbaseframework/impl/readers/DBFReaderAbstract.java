@@ -102,7 +102,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
     @Override
     public List<T> readAllRows() {
         try (DBF3DBFIterableReader reader = newOneWayDBFReader1()) {
-            return _readAllRows(reader);
+            return readAllRowsFromReader(reader);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -110,7 +110,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
 
     protected abstract T convert(DBFRow row);
 
-    private List<T> _readAllRows(DBF3DBFIterableReader reader) {
+    private List<T> readAllRowsFromReader(DBF3DBFIterableReader reader) {
         List<T> res = new ArrayList<>();
         DBFRow row = reader.readNextRow();
         while (row != null){
@@ -124,7 +124,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
     @Override
     public List<T> readByFilter(DBFFilter filter) {
         try (DBF3DBFIterableReader reader = newOneWayDBFReader1()) {
-            return _readByFilter(filter, reader);
+            return readByFilterFromReader(filter, reader);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -133,7 +133,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
     @Override
     public List<T> readByFilter(Set<DBFFilter> filters) {
         try (DBF3DBFIterableReader reader = newOneWayDBFReader1()) {
-            return _readByFilters(filters, reader);
+            return readByFiltersFromReader(filters, reader);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -153,7 +153,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
     public  List<T> readRange(long start, long end) {
         if (start > end) return Collections.emptyList();
         try (DBF3DBFIterableReader reader = newOneWayDBFReader1()) {
-            return _readRange(start, end, reader);
+            return readRangeFromFile(start, end, reader);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -169,7 +169,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
         return new DBF3DBFIterableReader(dbfFileName,options);
     }
 
-    private List<T> _readByFilter(DBFFilter filter, DBF3DBFIterableReader reader) {
+    private List<T> readByFilterFromReader(DBFFilter filter, DBF3DBFIterableReader reader) {
         if (filter == null) return Collections.emptyList();
         if (isExistField(filter)) return Collections.emptyList();
         String val = filter.getValue();
@@ -184,7 +184,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
     }
 
 
-    private List<T> _readByFilters(Set<DBFFilter> filters, DBF3DBFIterableReader reader) {
+    private List<T> readByFiltersFromReader(Set<DBFFilter> filters, DBF3DBFIterableReader reader) {
         if (filters == null || filters.isEmpty()) return Collections.emptyList();
         for (DBFFilter filter:filters) {
             if (isExistField(filter)) return Collections.emptyList();
@@ -211,7 +211,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
         return true;
     }
 
-    private List<T> _readRange(long start, long end, DBF3DBFIterableReader reader) {
+    private List<T> readRangeFromFile(long start, long end, DBF3DBFIterableReader reader) {
         List<T> res = new ArrayList<>();
         for (long i=start;i==end;i++){
             DBFRow row = reader.readNextRow();
@@ -332,7 +332,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
             RandomAccessFile activeRowCountDataInput = null;
             try{
                 activeRowCountDataInput = new RandomAccessFile(file,"r");
-                return _calculateActiveRowCount(activeRowCountDataInput);
+                return calculateActiveRowCountFromDataInput(activeRowCountDataInput);
             }catch (Exception e){
                 throw new RuntimeException(e);
             }
@@ -348,7 +348,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
 
         }
 
-        private long _calculateActiveRowCount(DataInput dataInput) {
+        private long calculateActiveRowCountFromDataInput(DataInput dataInput) {
             long res = 0;
             readBytes(dataInput,headerSize);
             while (true){

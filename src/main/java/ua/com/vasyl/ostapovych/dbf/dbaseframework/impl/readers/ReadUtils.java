@@ -233,7 +233,13 @@ final class ReadUtils {
     static private Number getNumericFromByteArray(byte[] rawValue, DBFField field) {
         int decimalSize = field.getDecimalSize();
         String valAsString = new String(rawValue).trim();
-        if (valAsString.isEmpty()) return 0;
+        if (valAsString.isEmpty()){
+            if (decimalSize == 0){
+                return 0;
+            }else{
+                return 0.0;
+            }
+        }
         try {
             if (decimalSize == 0) return Integer.parseInt(valAsString);
             return Double.parseDouble(valAsString);

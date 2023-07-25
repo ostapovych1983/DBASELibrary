@@ -10,7 +10,6 @@ public abstract class DBFField{
     private final int size;
     private final int decimalSize;
 
-
     public DBFField(String name, DBFType dbfType, int size, int decimalSize) {
         this.name = name;
         this.dbfType = dbfType;
@@ -37,7 +36,12 @@ public abstract class DBFField{
 
     @Override
     public String toString() {
-        return name;
+        return "DBFField{" +
+                "name='" + name + '\'' +
+                ", dbfType=" + dbfType +
+                ", size=" + size +
+                ", decimalSize=" + decimalSize +
+                '}';
     }
 
     @Override

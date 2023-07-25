@@ -69,7 +69,6 @@ public class WriterRawRowsTest {
         File fileName = createTemporaryFile();
         DBFWriter writer = DBASEFactory.dbf3().getDBFWriter(fileName);
         writer.writeRows(fields,rows);
-        System.out.println(fileName);
         DBFReader<Object[]> reader = DBASEFactory.dbf3().getDBFRawReader(fileName.getAbsolutePath());
         List<Object[]> readRows = reader.readAllRows();
         assertEquals(1,readRows.size());
@@ -81,6 +80,31 @@ public class WriterRawRowsTest {
         assertNull(row[4]);
         assertFalse((boolean) row[5]);
         reader.close();
+    }
+
+    @Test
+    public void testWriteNegativeDigigtInFieldWithSizeOne(){
+        DBFField [] fields = new DBFField[3];
+        fields[0] = new FloatField("FFIELD",1,0);
+        fields[1] = new NumericField("NIFIELD",1,0);
+        fields[2] = new NumericField("NDFIELD",1,1);
+
+        Object[][]  rows  = new Object[1][3];
+        rows[0][0] = -1.0;
+        rows[0][1] = -1;
+        rows[0][2] = -1.0;
+
+        File fileName = createTemporaryFile();
+        DBFWriter writer = DBASEFactory.dbf3().getDBFWriter(fileName);
+        writer.writeRows(fields,rows);
+        DBFReader<Object[]> reader = DBASEFactory.dbf3().getDBFRawReader(fileName.getAbsolutePath());
+        List<Object[]> readRows = reader.readAllRows();
+        assertEquals(1,readRows.size());
+        Object[] row = readRows.get(0);
+        assertEquals(-0.0f,(float)row[0],0.0000001);
+        assertEquals(0,(int)row[1]);
+        assertEquals(0.0,(double)row[2],0.000000001);
+
     }
 
 
@@ -106,7 +130,7 @@ public class WriterRawRowsTest {
         return sdf.format(date).equalsIgnoreCase(sdf.format(thatDate));
     }
 
-    public static File createTemporaryFile() {
+    static File createTemporaryFile() {
         File fileName;
         try {
             fileName = File.createTempFile("DBF-",".tmp");

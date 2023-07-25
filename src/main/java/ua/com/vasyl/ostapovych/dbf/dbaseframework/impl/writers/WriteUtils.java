@@ -16,8 +16,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import static java.lang.System.arraycopy;
+import static java.lang.Character.isDigit;
+import static java.lang.System.*;
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.enums.DBFGenerateStrategies.AUTOMATIC;
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.utils.DBFUtils.*;
 
@@ -26,11 +29,11 @@ final class WriteUtils {
 
     public static  <T> DBFField[] generateFields(Class<T> tClass, DBFGenerateStrategies strategy) {
         switch (strategy){
-            case AUTOMATIC: return _automaticStrategy(tClass);
-            case ANNOTATED_FIELDS: return _annotatedFieldsStrategy(tClass);
-            case ANNOTATED_GETTERS: return _annotatedGetterStrategy(tClass);
-            case FIELDS_NAME: return _byFieldNameStrategy(tClass);
-            case GETTERS_NAME: return _byGettersNamedStrategy(tClass);
+            case AUTOMATIC: return automaticStrategy(tClass);
+            case ANNOTATED_FIELDS: return annotatedFieldsStrategy(tClass);
+            case ANNOTATED_GETTERS: return annotatedGetterStrategy(tClass);
+            case FIELDS_NAME: return byFieldNameStrategy(tClass);
+            case GETTERS_NAME: return byGettersNamedStrategy(tClass);
         }
         return new DBFField[0];
     }
@@ -84,7 +87,7 @@ final class WriteUtils {
         return res;
     }
 
-    private static <T> DBFField[] _automaticStrategy(Class<T> tClass) {
+    private static <T> DBFField[] automaticStrategy(Class<T> tClass) {
         Field[] fields = removeStaticField(tClass.getDeclaredFields());
         Method[] methods = removeNotGetterMethods(removeStaticMethods(tClass.getDeclaredMethods()));
         boolean isOneGetterMethodContainsAnnotation = checkGettersOnAnnotation(methods);
@@ -104,7 +107,7 @@ final class WriteUtils {
         return _getDBFFieldsWithoutAnnotation(methods);
     }
 
-    private static <T> DBFField[] _annotatedFieldsStrategy(Class<T> tClass) {
+    private static <T> DBFField[] annotatedFieldsStrategy(Class<T> tClass) {
         Field[] fields = getAnnotatedFields(removeStaticField(tClass.getDeclaredFields()));
         List<DBFField> res = new ArrayList<>();
         for (Field field:fields){
@@ -113,7 +116,7 @@ final class WriteUtils {
         return res.toArray(new DBFField[0]);
     }
 
-    private static <T> DBFField[] _annotatedGetterStrategy(Class<T> tClass) {
+    private static <T> DBFField[] annotatedGetterStrategy(Class<T> tClass) {
         Method [] getters = getAnnotatedMethods(
                 removeStaticMethods(
                         removeNotGetterMethods(tClass.getMethods())));
@@ -125,7 +128,7 @@ final class WriteUtils {
         return res.toArray(new DBFField[0]);
     }
 
-    private static <T> DBFField[] _byFieldNameStrategy(Class<T> tClass) {
+    private static <T> DBFField[] byFieldNameStrategy(Class<T> tClass) {
         Field[] fields = removeStaticField(tClass.getDeclaredFields());
         List<DBFField> res = new ArrayList<>();
         for (Field field:fields){
@@ -134,7 +137,7 @@ final class WriteUtils {
         return res.toArray(new DBFField[0]);
     }
 
-    private static <T> DBFField[] _byGettersNamedStrategy(Class<T> tClass) {
+    private static <T> DBFField[] byGettersNamedStrategy(Class<T> tClass) {
         Method[] getters = removeStaticMethods(removeNotGetterMethods(tClass.getMethods()));
         List<DBFField> res = new ArrayList<>();
         for (Method method:getters){
@@ -415,8 +418,12 @@ final class WriteUtils {
             case LOGICAL:
                 return booleanToByteArray((Boolean) value);
             case NUMERIC: {
-                if (value instanceof Double) return doubleToByteArray((Double) value,dbfField);
-                else return (integerToByteArray((Integer) value,dbfField));
+                if (dbfField.getDecimalSize() >0) {
+                    return doubleToByteArray((Double) value, dbfField);
+                }
+                else{
+                    return (integerToByteArray((Integer) value,dbfField));
+                }
             }
         }
         return null;
@@ -432,8 +439,64 @@ final class WriteUtils {
         return res;
     }
 
-    private static byte[] floatToByteArray(Float asFloat, DBFField field) {
-        return stringToByteArray(String.valueOf(asFloat),field);
+    private static byte[] floatToByteArray(Float value, DBFField field) {
+        String floatAsString = String.valueOf(value);
+        int allCountDigits = getCountIntPartDigit(floatAsString);
+        if (allCountDigits >field.getSize()){
+            throw new DBFIllegalValueException(
+                    String.format("Cannot set float value %s to field %s. Size value = %s. Size field = %s",
+                            value,field.getName(),allCountDigits,field.getSize()));
+        }
+        if (field.getSize() == 1 && value <0){
+            Logger.getLogger(WriteUtils.class.getSimpleName())
+                    .log(Level.WARNING,
+                            String.format("Cannot insert negative value %s in float type field %s with size %d. 0.0 will be written",
+                                    value,field.getName(),field.getSize()));
+            return new byte[]{0};
+        }
+        return stringToByteArray(String.valueOf(value),field);
+    }
+
+    private static int getCountIntPartDigit(String floatAsString) {
+        if (floatAsString == null){
+            return -1;
+        }
+        char[] charArray = floatAsString.toCharArray();
+        int countWholePart = 0;
+        int countFractionPart = 0;
+
+        boolean isWhole = true;
+        for (char c : charArray) {
+            if (Character.isLetter(c)) {
+                return -1;
+            }
+            if (c == '.') {
+                isWhole = false;
+                continue;
+            }
+
+            if (!isDigit(c)){
+                continue;
+            }
+
+            if (isWhole) {
+                countWholePart++;
+            } else {
+                countFractionPart++;
+            }
+        }
+        int indexDecimalDelimiter = floatAsString.indexOf('.');
+        if (indexDecimalDelimiter  == -1) {
+            return countWholePart;
+        }else {
+            int valFractionPart = Integer.parseInt(floatAsString.substring(indexDecimalDelimiter+1));
+            if (valFractionPart == 0){
+                return countWholePart;
+            }else{
+                return countWholePart+countFractionPart;
+            }
+        }
+
     }
 
     private static byte[] booleanToByteArray(Boolean asLogic) {
@@ -443,12 +506,41 @@ final class WriteUtils {
         return res;
     }
 
-    private static byte[] integerToByteArray(Integer asInteger, DBFField dbfField) {
-        return stringToByteArray(String.valueOf(asInteger),dbfField);
+    private static byte[] integerToByteArray(Integer value, DBFField field) {
+        return numberStringToByteArray(value,field);
     }
 
-    private static byte[] doubleToByteArray(Double asDouble, DBFField dbfField) {
-        return stringToByteArray(String.valueOf(asDouble),dbfField);
+    private static byte[] numberStringToByteArray(Number value, DBFField field) {
+        String floatAsString = String.valueOf(value);
+        int allCountDigits = getCountIntPartDigit(floatAsString);
+        if (allCountDigits >field.getSize()){
+            throw new DBFIllegalValueException(
+                    String.format("Cannot set float value %s to field %s. Size value = %s. Size field = %s",
+                            value,field.getName(),allCountDigits,field.getSize()));
+        }
+        if (value instanceof Integer) {
+            if (field.getSize() == 1 && value.intValue() < 0) {
+                Logger.getLogger(WriteUtils.class.getSimpleName())
+                        .log(Level.WARNING,
+                                String.format("Cannot insert negative value %s in float type field %s with size %d. 0.0 will be written",
+                                        value, field.getName(), field.getSize()));
+                return new byte[]{0};
+            }
+        }
+        if (value instanceof Double){
+            if (field.getSize() == 1 && value.doubleValue() <0){
+                Logger.getLogger(WriteUtils.class.getSimpleName())
+                        .log(Level.WARNING,
+                                String.format("Cannot insert negative value %s in float type field %s with size %d. 0.0 will be written",
+                                        value,field.getName(),field.getSize()));
+                return new byte[]{0};
+            }
+        }
+        return stringToByteArray(String.valueOf(value),field);
+    }
+
+    private static byte[] doubleToByteArray(Double value, DBFField field) {
+        return numberStringToByteArray(value,field);
     }
 
     private static byte[] stringToByteArray(String value, DBFField f) {

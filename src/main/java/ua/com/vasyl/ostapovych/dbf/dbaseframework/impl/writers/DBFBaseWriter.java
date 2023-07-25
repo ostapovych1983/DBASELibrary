@@ -24,7 +24,7 @@ public class DBFBaseWriter implements DBFWriter {
     public <T> void writeRows(List<T> rows,Class<T> tClass) {
         rewriteExistFile(file);
         try (DBFFile dbfFile = createFile(file)) {
-            _writeRows(rows, tClass, dbfFile);
+            writeRowsToFile(rows, tClass, dbfFile);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -36,7 +36,7 @@ public class DBFBaseWriter implements DBFWriter {
         try {
             deleteFile(file);
             dbfFile = createFile(file);
-            _writeRows(fields, rows,dbfFile);
+            writeRowsToFile(fields, rows,dbfFile);
         }catch (Exception e){
             throw new RuntimeException(e);
         }finally {
@@ -44,7 +44,7 @@ public class DBFBaseWriter implements DBFWriter {
         }
     }
 
-    private <T> void _writeRows(List<T> rows, Class<T> tClass,DBFFile file) {
+    private <T> void writeRowsToFile(List<T> rows, Class<T> tClass, DBFFile file) {
         if (rows == null) throw new DBFIllegalValueException("DBF Rows cannot be null");
         DBFGenerateStrategies strategy = checkStrategy(tClass);
         DBFField [] fields = generateFields(tClass,strategy);
@@ -56,7 +56,7 @@ public class DBFBaseWriter implements DBFWriter {
         }
         file.write(0x1A);
     }
-    private void _writeRows(DBFField[] fields, Object[][] rows, DBFFile file) {
+    private void writeRowsToFile(DBFField[] fields, Object[][] rows, DBFFile file) {
         if (rows == null) throw new DBFIllegalValueException("DBF Rows cannot be null");
         byte [] caption = createCaption(fields,rows.length);
         file.write(caption);
@@ -75,7 +75,6 @@ public class DBFBaseWriter implements DBFWriter {
             }
         }
     }
-
     private static void deleteFile(File file) {
         if (file.exists()){
             boolean isSuccessfulDeleted = file.delete();
