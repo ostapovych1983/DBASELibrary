@@ -27,4 +27,12 @@ public class DBFFilter {
         return operation;
     }
 
+    @Override
+    public String toString() {
+        return "DBFFilter{" +
+                "value='" + value + '\'' +
+                ", fieldName='" + fieldName + '\'' +
+                ", operation=" + operation +
+                '}';
+    }
 }

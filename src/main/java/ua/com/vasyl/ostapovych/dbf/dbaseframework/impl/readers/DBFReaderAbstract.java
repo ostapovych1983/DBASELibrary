@@ -2,17 +2,15 @@ package ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.readers;
 
 
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.DBFMap;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.DBFRow;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.enums.DBFCodePage;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.DBFFieldNotFoundException;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.DBFFileOpenException;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.DBFNoSuchRowException;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.DBFField;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.types.DBFType;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbfoptions.DBFOptions;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.filters.DBFFilter;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFReader;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.DBFRow;
-
 
 import java.io.*;
 import java.util.*;
@@ -104,7 +102,12 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
         try (DBF3DBFIterableReader reader = newOneWayDBFReader1()) {
             return readAllRowsFromReader(reader);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            RuntimeException runtimeException = new RuntimeException(e);
+            logger.log(Level.WARNING,String.format(
+                    "Error when reading row. Error ='%s'",
+                    e.getMessage()
+            ));
+            throw runtimeException;
         }
     }
 
@@ -126,7 +129,10 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
         try (DBF3DBFIterableReader reader = newOneWayDBFReader1()) {
             return readByFilterFromReader(filter, reader);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            RuntimeException exception = new RuntimeException(e);
+            logger.log(Level.WARNING,String.
+                    format("Error read data by filter %s. Error = '%s'",filter,e.getMessage()));
+            throw exception;
         }
     }
 
@@ -135,7 +141,10 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
         try (DBF3DBFIterableReader reader = newOneWayDBFReader1()) {
             return readByFiltersFromReader(filters, reader);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            RuntimeException exception = new RuntimeException(e);
+            logger.log(Level.WARNING,String.
+                    format("Error read data by filter %s. Error = '%s'",filters,e.getMessage()));
+            throw exception;
         }
     }
 
@@ -155,7 +164,10 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
         try (DBF3DBFIterableReader reader = newOneWayDBFReader1()) {
             return readRangeFromFile(start, end, reader);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            RuntimeException exception = new RuntimeException(e);
+            logger.log(Level.WARNING,String.
+                    format("Error read data from %d to %d. Error = '%s'",start,end,e.getMessage()));
+            throw exception;
         }
     }
 
@@ -232,8 +244,10 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
         private long activeRowCount;
         private final File file;
         private final DBFOptions dbfOptions;
+        private final Logger logger;
 
         DBF3DBFIterableReader(String dbfFiledName, DBFOptions options){
+            logger = Logger.getLogger(this.getClass().getSimpleName());
             RandomAccessFile dataInput;
             this.dbfOptions = options;
             this.dbfCodePage = options.getCodePage();
@@ -241,7 +255,11 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
                 file = new File(dbfFiledName);
                 dataInput = new RandomAccessFile(file, "r");
             } catch (Exception e) {
-                throw new DBFFileOpenException("Cannot open file  " + dbfFiledName+" check if file exist and you have access to him", e);
+                RuntimeException exception =
+                        new RuntimeException("Cannot open file  " + dbfFiledName+" check if file exist and you have access to him", e);
+                logger.log(Level.WARNING,String.
+                        format("Cannot open file %s check if file exist and you have access to him. Error = '%s'",dbfFiledName,e.getMessage()));
+                throw exception;
             }
             readHeader(dataInput);
             activeRowCount = -1;
@@ -329,22 +347,12 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
         }
 
         private long calculateActiveRowCount() {
-            RandomAccessFile activeRowCountDataInput = null;
-            try{
-                activeRowCountDataInput = new RandomAccessFile(file,"r");
+            try (RandomAccessFile activeRowCountDataInput = new RandomAccessFile(file, "r")) {
                 return calculateActiveRowCountFromDataInput(activeRowCountDataInput);
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            finally {
-                if (activeRowCountDataInput != null) {
-                    try {
-                        activeRowCountDataInput.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            //NOP
 
         }
 
@@ -360,7 +368,10 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
                     //it is ok! eof means there no row in dbf and now we can return counted row.
                     return res;
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    RuntimeException exception = new RuntimeException(e);
+                    logger.log(Level.WARNING,String.
+                            format("Error occurred when try to detect row size. Error = %s",e.getMessage()));
+                    throw exception;
                 }
             }
         }

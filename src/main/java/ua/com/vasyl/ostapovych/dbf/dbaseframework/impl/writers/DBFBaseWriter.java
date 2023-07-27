@@ -1,13 +1,17 @@
 package ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.writers;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.DBFWriteException;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFWriter;
+
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.DBFFile;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.enums.DBFGenerateStrategies;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.DBFIllegalValueException;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.DBFWriteException;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.DBFField;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFWriter;
 
 import java.io.File;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.FileUtils.createFile;
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.utils.DBFUtils.checkStrategy;
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.writers.WriteUtils.*;
@@ -15,18 +19,23 @@ import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.writers.WriteUtils
 
 public class DBFBaseWriter implements DBFWriter {
     private final File file;
+    private final Logger logger;
 
     public DBFBaseWriter(File file) {
+        logger = Logger.getLogger(this.getClass().getSimpleName());
         this.file = file;
     }
 
     @Override
     public <T> void writeRows(List<T> rows,Class<T> tClass) {
-        rewriteExistFile(file);
+        deleteFileIfExist(file);
         try (DBFFile dbfFile = createFile(file)) {
             writeRowsToFile(rows, tClass, dbfFile);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            RuntimeException exception = new RuntimeException(e);
+            logger.log(Level.WARNING,String.
+                    format("Error write rows .Error = '%s'",e.getMessage()));
+            throw exception;
         }
     }
 
@@ -67,7 +76,7 @@ public class DBFBaseWriter implements DBFWriter {
         file.write(0x1A);
     }
 
-    private static void rewriteExistFile(File file) {
+    private static void deleteFileIfExist(File file) {
         if (file.exists()){
             boolean isSuccessfulDeleted = file.delete();
             if (!isSuccessfulDeleted) {

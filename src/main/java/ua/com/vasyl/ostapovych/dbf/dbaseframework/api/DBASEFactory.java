@@ -62,7 +62,7 @@ public class DBASEFactory {
                                         .getResourceAsStream("DbfLogConfiguration.properties")
                         );
             } catch (SecurityException | IOException e1) {
-                e1.printStackTrace();
+               //NOP
             }
             isunitLog = true;
         }
