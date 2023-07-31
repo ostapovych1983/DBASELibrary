@@ -12,8 +12,17 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbfoptions.DBFOptions;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.filters.DBFFilter;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFReader;
 
-import java.io.*;
-import java.util.*;
+import java.io.Closeable;
+import java.io.DataInput;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -352,8 +361,6 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            //NOP
-
         }
 
         private long calculateActiveRowCountFromDataInput(DataInput dataInput) {
@@ -365,7 +372,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
                     dataInput.readFully(ignore);
                     if (ignore[0] == 0x20) res++;
                 } catch (EOFException e) {
-                    //it is ok! eof means there no row in dbf and now we can return counted row.
+                    //it is ok! eof means there no row in dbf, and now we can return counted row.
                     return res;
                 } catch (IOException e) {
                     RuntimeException exception = new RuntimeException(e);
