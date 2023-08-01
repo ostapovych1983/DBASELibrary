@@ -6,10 +6,6 @@ public class DBFFileOpenException extends RuntimeException{
         super(message);
     }
 
-    public DBFFileOpenException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public DBFFileOpenException(Throwable cause) {
         super(cause);
     }

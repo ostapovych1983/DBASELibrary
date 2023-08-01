@@ -1,7 +1,7 @@
 package ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.writertest;
 
 import org.junit.Test;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.DBASEFactory;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.DBASEFactory;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFReader;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFWriter;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.*;

@@ -28,9 +28,6 @@ import static ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.types.DBFType.*
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.utils.DBFUtils.*;
 
 final class ReadUtils {
-
-
-
     public static  Object readValueFromBytes(byte[] rawValue, DBFField field,DBFCodePage dbfCodePage) {
         switch (field.getDbfType()){
             case CHARACTER:

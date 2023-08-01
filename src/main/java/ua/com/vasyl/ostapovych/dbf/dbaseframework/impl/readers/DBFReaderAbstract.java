@@ -11,6 +11,8 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.types.DBFType;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbfoptions.DBFOptions;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.filters.DBFFilter;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFReader;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.log.DBFLogger;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.log.DBFLoggerManager;
 
 import java.io.Closeable;
 import java.io.DataInput;
@@ -23,8 +25,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.readers.ReadUtils.*;
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.utils.DBFUtils.generateDBFField;
@@ -32,7 +33,7 @@ import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.utils.DBFUtils.gen
 
 abstract class DBFReaderAbstract<T> implements DBFReader<T> {
 
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
+    private final DBFLogger logger;
     private final long rowCount;
     private final String dbfFileName;
     private final int columnCount;
@@ -41,10 +42,9 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
     private final DBF3DBFIterableReader currentReader;
     private final DBF3DBFIterableReader iterableReader;
 
-    DBFReaderAbstract(String fileName, DBFOptions options){
-        if (logger.isLoggable(Level.CONFIG)) {
-            logger.log(Level.CONFIG, String.format("Creating %s with options %s", getClass().getSimpleName(), options));
-        }
+    DBFReaderAbstract(String fileName, DBFOptions options,DBFLogger logger){
+        this.logger = logger;
+        logger.debug("Creating %s with options {}", getClass().getSimpleName(), options);
         this.dbfFileName = fileName;
         this.options = options;
         this.iterableReader = newOneWayDBFReader1();
@@ -57,14 +57,12 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
         this.columnCount = reader.getColumnCount();
         this.fields = reader.getFields();
         this.currentReader = reader;
+
     }
 
     @Override
     public Iterator<T> iterator() {
-
-        if (logger.isLoggable(Level.CONFIG)) {
-            logger.log(Level.FINE, "Getting DBF iterator");
-        }
+        logger.trace("Getting DBF iterator");
         return new Iterator<T>() {
             private final DBF3DBFIterableReader reader = iterableReader;
             private DBFRow currentRow;
@@ -112,10 +110,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
             return readAllRowsFromReader(reader);
         } catch (Exception e) {
             RuntimeException runtimeException = new RuntimeException(e);
-            logger.log(Level.WARNING,String.format(
-                    "Error when reading row. Error ='%s'",
-                    e.getMessage()
-            ));
+            logger.error("Error when reading row. Error = {}}",e.getMessage());
             throw runtimeException;
         }
     }
@@ -139,8 +134,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
             return readByFilterFromReader(filter, reader);
         } catch (Exception e) {
             RuntimeException exception = new RuntimeException(e);
-            logger.log(Level.WARNING,String.
-                    format("Error read data by filter %s. Error = '%s'",filter,e.getMessage()));
+            logger.error("Error read data by filter %s. Error = {}}",filter,e.getMessage());
             throw exception;
         }
     }
@@ -151,8 +145,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
             return readByFiltersFromReader(filters, reader);
         } catch (Exception e) {
             RuntimeException exception = new RuntimeException(e);
-            logger.log(Level.WARNING,String.
-                    format("Error read data by filter %s. Error = '%s'",filters,e.getMessage()));
+            logger.error("Error read data by filter %s. Error = '%s'",filters,e.getMessage());
             throw exception;
         }
     }
@@ -174,8 +167,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
             return readRangeFromFile(start, end, reader);
         } catch (Exception e) {
             RuntimeException exception = new RuntimeException(e);
-            logger.log(Level.WARNING,String.
-                    format("Error read data from %d to %d. Error = '%s'",start,end,e.getMessage()));
+            logger.error("Error read data from %d to %d. Error = '%s'",start,end,e.getMessage());
             throw exception;
         }
     }
@@ -253,10 +245,11 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
         private long activeRowCount;
         private final File file;
         private final DBFOptions dbfOptions;
-        private final Logger logger;
+        private final DBFLogger logger;
 
         DBF3DBFIterableReader(String dbfFiledName, DBFOptions options){
-            logger = Logger.getLogger(this.getClass().getSimpleName());
+            String loggerName = getClass().getSimpleName();
+            logger = DBFLoggerManager.getDBFLogger(loggerName);
             RandomAccessFile dataInput;
             this.dbfOptions = options;
             this.dbfCodePage = options.getCodePage();
@@ -264,11 +257,11 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
                 file = new File(dbfFiledName);
                 dataInput = new RandomAccessFile(file, "r");
             } catch (Exception e) {
-                RuntimeException exception =
-                        new RuntimeException("Cannot open file  " + dbfFiledName+" check if file exist and you have access to him", e);
-                logger.log(Level.WARNING,String.
-                        format("Cannot open file %s check if file exist and you have access to him. Error = '%s'",dbfFiledName,e.getMessage()));
-                throw exception;
+                logger.error("Cannot open file %s check if file exist and you have access to him. Error = '%s'"
+                        ,dbfFiledName,e.getMessage());
+                throw new RuntimeException(
+                        String.format("Cannot open file %s check if file exist and you have access to him",
+                                dbfFiledName), e);
             }
             readHeader(dataInput);
             activeRowCount = -1;
@@ -376,8 +369,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
                     return res;
                 } catch (IOException e) {
                     RuntimeException exception = new RuntimeException(e);
-                    logger.log(Level.WARNING,String.
-                            format("Error occurred when try to detect row size. Error = %s",e.getMessage()));
+                    logger.error("Error occurred when try to detect row size. Error = {}}",e.getMessage());
                     throw exception;
                 }
             }
@@ -389,7 +381,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
                 try {
                     dataInput.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //NOP
                 }
             }
         }

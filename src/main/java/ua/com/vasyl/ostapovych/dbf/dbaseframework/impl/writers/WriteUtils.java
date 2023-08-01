@@ -5,8 +5,14 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.annotations.DBFTable;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.enums.DBFGenerateStrategies;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.DBFIllegalFieldException;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.DBFIllegalValueException;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.*;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.CharacterField;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.DBFField;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.DateField;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.FloatField;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.LogicalField;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.NumericField;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.types.DBFType;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.log.DBFLogger;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.utils.DBFUtils;
 
 import java.lang.reflect.Field;
@@ -16,11 +22,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static java.lang.Character.isDigit;
-import static java.lang.System.*;
+import static java.lang.System.arraycopy;
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.enums.DBFGenerateStrategies.AUTOMATIC;
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.utils.DBFUtils.*;
 
@@ -61,26 +65,26 @@ final class WriteUtils {
         return caption;
     }
 
-    public  static  <T> byte[] toDBFRecord(DBFField[] fields, T row) {
+    public  static  <T> byte[] toDBFRecord(DBFLogger logger,DBFField[] fields, T row) {
         byte[] res = new byte[calculateRecordSize(fields)];
         res[0] = 0x20;
         int currentPositionRes = 1;
         for (DBFField field : fields) {
-            byte[] fieldAsByteArray = toDBFFieldAsByteArray(field, row);
+            byte[] fieldAsByteArray = toDBFFieldAsByteArray(logger,field, row);
             arraycopy(fieldAsByteArray, 0, res, currentPositionRes, fieldAsByteArray.length);
             currentPositionRes+=field.getSize();
         }
         return res;
     }
 
-    public static  byte[] toDBFRecord(DBFField [] fields,Object[] row) {
+    public static  byte[] toDBFRecord(DBFLogger logger,DBFField [] fields,Object[] row) {
         if (fields.length > row.length) throw new IllegalArgumentException("Count of row cannot be less than count of dbfFields");
         byte[] res = new byte[calculateRecordSize(fields)];
         res[0] = 0x20;
         int currentPositionRes = 1;
         for (int i=0;i< fields.length;i++){
             DBFField field = fields[i];
-            byte[] fieldAsByteArray = toDBFFieldAsByteArray(field, row, i);
+            byte[] fieldAsByteArray = toDBFFieldAsByteArray(logger,field, row, i);
             arraycopy(fieldAsByteArray, 0, res, currentPositionRes, fieldAsByteArray.length);
             currentPositionRes+=field.getSize();
         }
@@ -268,20 +272,20 @@ final class WriteUtils {
 
     }
 
-    static <T> byte[] toDBFFieldAsByteArray(DBFField dbfField, T row) {
+    static <T> byte[] toDBFFieldAsByteArray(DBFLogger dbfLogger,DBFField dbfField, T row) {
         Object value = getValueFromObject(dbfField,row);
-        return _getValueFromObject(dbfField,value);
+        return _getValueFromObject(dbfLogger,dbfField,value);
     }
 
-    private static byte[] toDBFFieldAsByteArray(DBFField dbfField, Object[] row, int i) {
+    private static byte[] toDBFFieldAsByteArray(DBFLogger dbfLogger,DBFField dbfField, Object[] row, int i) {
         Object value = row[i];
-        return _getValueFromObject(dbfField,value);
+        return _getValueFromObject(dbfLogger,dbfField,value);
     }
 
     private static short calculateRecordSize(DBFField[] fields) {
         short res = 0;
         for (DBFField dbfField:fields){
-            res +=dbfField.getSize();
+            res += (short) dbfField.getSize();
         }
         res++;
         return res;
@@ -348,9 +352,6 @@ final class WriteUtils {
         return DBFUtils.generateDBFField(annotation);
     }
 
-
-
-
     private static DBFField generateDBFFieldFromClassField(Field field) {
         String fileName = field.getName();
         DBFType dbfType = generateDBFType(field.getType());
@@ -402,7 +403,7 @@ final class WriteUtils {
         }
         return null;
     }
-    static private byte[] _getValueFromObject(DBFField dbfField, Object value) {
+    static private byte[] _getValueFromObject(DBFLogger logger,DBFField dbfField, Object value) {
         switch (dbfField.getDbfType()) {
             case DATE:
                 return dateToByteArray((Date) value);
@@ -410,19 +411,19 @@ final class WriteUtils {
                 return stringToByteArray((String)value,dbfField);
             case FLOAT: {
                 if (value instanceof Double)
-                    return floatToByteArray(((Double) value).floatValue(), dbfField);
+                    return floatToByteArray(logger,((Double) value).floatValue(), dbfField);
                 if (value instanceof Integer){
-                    return floatToByteArray(((Integer) value).floatValue(), dbfField);
-                }else return floatToByteArray((Float) value, dbfField);
+                    return floatToByteArray(logger,((Integer) value).floatValue(), dbfField);
+                }else return floatToByteArray(logger,(Float) value, dbfField);
             }
             case LOGICAL:
                 return booleanToByteArray((Boolean) value);
             case NUMERIC: {
                 if (dbfField.getDecimalSize() >0) {
-                    return doubleToByteArray((Double) value, dbfField);
+                    return doubleToByteArray(logger,(Double) value, dbfField);
                 }
                 else{
-                    return (integerToByteArray((Integer) value,dbfField));
+                    return (integerToByteArray(logger,(Integer) value,dbfField));
                 }
             }
         }
@@ -439,7 +440,7 @@ final class WriteUtils {
         return res;
     }
 
-    private static byte[] floatToByteArray(Float value, DBFField field) {
+    private static byte[] floatToByteArray(DBFLogger logger,Float value, DBFField field) {
         String floatAsString = String.valueOf(value);
         int allCountDigits = getCountIntPartDigit(floatAsString);
         if (allCountDigits >field.getSize()){
@@ -448,10 +449,9 @@ final class WriteUtils {
                             value,field.getName(),allCountDigits,field.getSize()));
         }
         if (field.getSize() == 1 && value <0){
-            Logger.getLogger(WriteUtils.class.getSimpleName())
-                    .log(Level.WARNING,
-                            String.format("Cannot insert negative value %s in float type field %s with size %d. 0.0 will be written",
-                                    value,field.getName(),field.getSize()));
+            logger
+                    .warning("Cannot insert negative value %s in float type field %s with size %d. 0.0 will be written",
+                                    value,field.getName(),field.getSize());
             return new byte[]{0};
         }
         return stringToByteArray(String.valueOf(value),field);
@@ -506,11 +506,11 @@ final class WriteUtils {
         return res;
     }
 
-    private static byte[] integerToByteArray(Integer value, DBFField field) {
-        return numberStringToByteArray(value,field);
+    private static byte[] integerToByteArray(DBFLogger logger,Integer value, DBFField field) {
+        return numberStringToByteArray(logger,value,field);
     }
 
-    private static byte[] numberStringToByteArray(Number value, DBFField field) {
+    private static byte[] numberStringToByteArray(DBFLogger logger,Number value, DBFField field) {
         String floatAsString = String.valueOf(value);
         int allCountDigits = getCountIntPartDigit(floatAsString);
         if (allCountDigits >field.getSize()){
@@ -520,27 +520,25 @@ final class WriteUtils {
         }
         if (value instanceof Integer) {
             if (field.getSize() == 1 && value.intValue() < 0) {
-                Logger.getLogger(WriteUtils.class.getSimpleName())
-                        .log(Level.WARNING,
-                                String.format("Cannot insert negative value %s in float type field %s with size %d. 0.0 will be written",
-                                        value, field.getName(), field.getSize()));
+                logger
+                        .warning("Cannot insert negative value %s in float type field %s with size {}}. 0.0 will be written",
+                                        value, field.getName(), field.getSize());
                 return new byte[]{0};
             }
         }
         if (value instanceof Double){
             if (field.getSize() == 1 && value.doubleValue() <0){
-                Logger.getLogger(WriteUtils.class.getSimpleName())
-                        .log(Level.WARNING,
-                                String.format("Cannot insert negative value %s in float type field %s with size %d. 0.0 will be written",
-                                        value,field.getName(),field.getSize()));
+                logger
+                        .warning("Cannot insert negative value %s in float type field %s with size %d. 0.0 will be written",
+                                        value,field.getName(),field.getSize());
                 return new byte[]{0};
             }
         }
         return stringToByteArray(String.valueOf(value),field);
     }
 
-    private static byte[] doubleToByteArray(Double value, DBFField field) {
-        return numberStringToByteArray(value,field);
+    private static byte[] doubleToByteArray(DBFLogger logger,Double value, DBFField field) {
+        return numberStringToByteArray(logger,value,field);
     }
 
     private static byte[] stringToByteArray(String value, DBFField f) {

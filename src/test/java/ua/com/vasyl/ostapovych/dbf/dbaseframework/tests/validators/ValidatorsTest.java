@@ -18,21 +18,5 @@ public class ValidatorsTest {
         private String fieldNameOne;
         @DBFColumn(name = "Name", type = DBFType.CHARACTER)
         private String fieldNameTwo;
-
-        public String getFieldNameOne() {
-            return fieldNameOne;
-        }
-
-        public void setFieldNameOne(String fieldNameOne) {
-            this.fieldNameOne = fieldNameOne;
-        }
-
-        public String getFieldNameTwo() {
-            return fieldNameTwo;
-        }
-
-        public void setFieldNameTwo(String fieldNameTwo) {
-            this.fieldNameTwo = fieldNameTwo;
-        }
     }
 }

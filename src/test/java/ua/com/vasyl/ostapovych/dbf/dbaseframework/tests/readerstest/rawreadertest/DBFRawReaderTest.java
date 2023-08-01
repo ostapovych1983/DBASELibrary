@@ -1,7 +1,7 @@
 package ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.readerstest.rawreadertest;
 
 import org.junit.Assert;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.DBASEFactory;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.DBASEFactory;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbfoptions.DBFOptions;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFReader;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.readerstest.abstractreaderstest.AbstractDBFReaderTest;

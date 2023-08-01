@@ -40,7 +40,7 @@ public class DBFFile implements Closeable {
         try {
             fileOutputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //NOP
         }
     }
 }

@@ -9,12 +9,14 @@ public class DBFOptions {
 
     private boolean validateAnotation = false;
 
-    private boolean isEnableLog = true;
     private DBFCodePage codePage;
+
+    private boolean enebleLog;
 
     public static DBFOptions defaultOptions() {
         DBFOptions options = new DBFOptions();
         options.setCodePage(DBFCodePage.RUSSIAN_WINDOWS);
+        options.setEnebleLog(true);
         return options;
     }
 
@@ -25,7 +27,6 @@ public class DBFOptions {
     public void setReadDeleted(boolean readDeleted) {
         this.readDeleted = readDeleted;
     }
-
 
     public DBFCodePage getCodePage() {
         return codePage;
@@ -51,12 +52,12 @@ public class DBFOptions {
         this.validateAnotation = validateAnotation;
     }
 
-    public boolean isEnableLog() {
-        return isEnableLog;
+    public boolean isEnebleLog() {
+        return enebleLog;
     }
 
-    public void setEnableLog(boolean enableLog) {
-        isEnableLog = enableLog;
+    public void setEnebleLog(boolean enebleLog) {
+        this.enebleLog = enebleLog;
     }
 
     @Override
@@ -65,8 +66,8 @@ public class DBFOptions {
                 "readDeleted=" + readDeleted +
                 ", readCodePageFromTable=" + readCodePageFromTable +
                 ", validateAnotation=" + validateAnotation +
-                ", isEnableLog=" + isEnableLog +
                 ", codePage=" + codePage +
+                ", enebleLog=" + enebleLog +
                 '}';
     }
 }

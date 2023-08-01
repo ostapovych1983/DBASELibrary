@@ -2,9 +2,8 @@ package ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.readerstest.basereadert
 
 import org.junit.Assert;
 import org.junit.Test;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.DBASEFactory;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.DBASEFactory;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.DBFRow;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbfoptions.DBFOptions;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFReader;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public class DBFBaseReaderStreamTest {
     @Test
     public void testMapFunction(){
         String dbfFile = getDBFTableByResourceName("dbf/dbf3/StreamExample.dbf");
-        DBFReader<DBFRow> reader = getReader(dbfFile,null);
+        DBFReader<DBFRow> reader = getReader(dbfFile);
         List<String> list = reader.stream().map(this::toDBFString).collect(Collectors.toList());
         Assert.assertEquals(100,list.size());
     }
@@ -26,8 +25,7 @@ public class DBFBaseReaderStreamTest {
         return dbfRow.getAsString(0);
     }
 
-    protected DBFReader<DBFRow> getReader(String dbfFile, DBFOptions options) {
-        if (options != null) return DBASEFactory.dbf3(options).getDBFReader(dbfFile);
+    protected DBFReader<DBFRow> getReader(String dbfFile) {
         return DBASEFactory.dbf3().getDBFReader(dbfFile);
     }
 }

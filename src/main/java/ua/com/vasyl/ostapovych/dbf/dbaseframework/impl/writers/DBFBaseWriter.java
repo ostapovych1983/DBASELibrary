@@ -5,24 +5,29 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.enums.DBFGenerateStrat
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.DBFIllegalValueException;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.DBFWriteException;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.DBFField;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbfoptions.DBFOptions;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFWriter;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.log.DBFLogger;
+import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.log.DBFLoggerManager;
 
 import java.io.File;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.FileUtils.createFile;
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.utils.DBFUtils.checkStrategy;
 import static ua.com.vasyl.ostapovych.dbf.dbaseframework.impl.writers.WriteUtils.*;
 
 
-public class DBFBaseWriter implements DBFWriter {
+class DBFBaseWriter implements DBFWriter {
     private final File file;
-    private final Logger logger;
+    private final DBFLogger logger;
 
-    public DBFBaseWriter(File file) {
-        logger = Logger.getLogger(this.getClass().getSimpleName());
+    public DBFBaseWriter(File file, DBFOptions dbfOptions) {
+        if (dbfOptions.isEnebleLog()) {
+            logger = DBFLoggerManager.getDBFLogger(this.getClass().getSimpleName());
+        }else{
+            logger = DBFLoggerManager.getEmptyDBFLogger();
+        }
         this.file = file;
     }
 
@@ -33,8 +38,7 @@ public class DBFBaseWriter implements DBFWriter {
             writeRowsToFile(rows, tClass, dbfFile);
         } catch (Exception e) {
             RuntimeException exception = new RuntimeException(e);
-            logger.log(Level.WARNING,String.
-                    format("Error write rows .Error = '%s'",e.getMessage()));
+            logger.error("Error write rows .Error = '%s'",e.getMessage());
             throw exception;
         }
     }
@@ -45,7 +49,7 @@ public class DBFBaseWriter implements DBFWriter {
         try {
             deleteFile(file);
             dbfFile = createFile(file);
-            writeRowsToFile(fields, rows,dbfFile);
+            writeRowsToFile(logger,fields, rows,dbfFile);
         }catch (Exception e){
             throw new RuntimeException(e);
         }finally {
@@ -60,17 +64,17 @@ public class DBFBaseWriter implements DBFWriter {
         byte [] caption = createCaption(fields,rows.size());
         file.write(caption);
         for (T row:rows){
-            byte[] rowAsByte = toDBFRecord(fields,row);
+            byte[] rowAsByte = toDBFRecord(logger,fields,row);
             file.write(rowAsByte);
         }
         file.write(0x1A);
     }
-    private void writeRowsToFile(DBFField[] fields, Object[][] rows, DBFFile file) {
+    private void writeRowsToFile(DBFLogger logger,DBFField[] fields, Object[][] rows, DBFFile file) {
         if (rows == null) throw new DBFIllegalValueException("DBF Rows cannot be null");
         byte [] caption = createCaption(fields,rows.length);
         file.write(caption);
         for (Object[] row:rows){
-            byte[] rowAsByte = toDBFRecord(fields, row);
+            byte[] rowAsByte = toDBFRecord(logger,fields, row);
             file.write(rowAsByte);
         }
         file.write(0x1A);
