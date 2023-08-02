@@ -5,10 +5,8 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.enums.DBFGenerateStrat
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.DBFIllegalValueException;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.DBFWriteException;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.fields.DBFField;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbfoptions.DBFOptions;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.interfaces.DBFWriter;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.log.DBFLogger;
-import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.log.DBFLoggerManager;
 
 import java.io.File;
 import java.util.List;
@@ -22,12 +20,8 @@ class DBFBaseWriter implements DBFWriter {
     private final File file;
     private final DBFLogger logger;
 
-    public DBFBaseWriter(File file, DBFOptions dbfOptions) {
-        if (dbfOptions.isEnebleLog()) {
-            logger = DBFLoggerManager.getDBFLogger(this.getClass().getSimpleName());
-        }else{
-            logger = DBFLoggerManager.getEmptyDBFLogger();
-        }
+    public DBFBaseWriter(File file, DBFLogger logger) {
+        this.logger = logger;
         this.file = file;
     }
 
@@ -38,7 +32,7 @@ class DBFBaseWriter implements DBFWriter {
             writeRowsToFile(rows, tClass, dbfFile);
         } catch (Exception e) {
             RuntimeException exception = new RuntimeException(e);
-            logger.error("Error write rows .Error = '%s'",e.getMessage());
+            logger.error("Error write rows .Error = '{}'",e.getMessage());
             throw exception;
         }
     }

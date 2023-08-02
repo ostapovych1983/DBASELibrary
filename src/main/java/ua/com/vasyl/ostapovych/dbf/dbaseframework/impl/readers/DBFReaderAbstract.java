@@ -44,7 +44,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
 
     DBFReaderAbstract(String fileName, DBFOptions options,DBFLogger logger){
         this.logger = logger;
-        logger.debug("Creating %s with options {}", getClass().getSimpleName(), options);
+        logger.debug("Creating DBFReader with options {}", options);
         this.dbfFileName = fileName;
         this.options = options;
         this.iterableReader = newOneWayDBFReader1();
@@ -134,7 +134,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
             return readByFilterFromReader(filter, reader);
         } catch (Exception e) {
             RuntimeException exception = new RuntimeException(e);
-            logger.error("Error read data by filter %s. Error = {}}",filter,e.getMessage());
+            logger.error("Error read data by filter {}. Error = {}}",filter,e.getMessage());
             throw exception;
         }
     }
@@ -145,7 +145,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
             return readByFiltersFromReader(filters, reader);
         } catch (Exception e) {
             RuntimeException exception = new RuntimeException(e);
-            logger.error("Error read data by filter %s. Error = '%s'",filters,e.getMessage());
+            logger.error("Error read data by filter {}. Error = '{}'",filters,e.getMessage());
             throw exception;
         }
     }
@@ -167,7 +167,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
             return readRangeFromFile(start, end, reader);
         } catch (Exception e) {
             RuntimeException exception = new RuntimeException(e);
-            logger.error("Error read data from %d to %d. Error = '%s'",start,end,e.getMessage());
+            logger.error("Error read data from {} to %d. Error = '{}'",start,end,e.getMessage());
             throw exception;
         }
     }
@@ -257,7 +257,7 @@ abstract class DBFReaderAbstract<T> implements DBFReader<T> {
                 file = new File(dbfFiledName);
                 dataInput = new RandomAccessFile(file, "r");
             } catch (Exception e) {
-                logger.error("Cannot open file %s check if file exist and you have access to him. Error = '%s'"
+                logger.error("Cannot open file {} check if file exist and you have access to him. Error = '{}'"
                         ,dbfFiledName,e.getMessage());
                 throw new RuntimeException(
                         String.format("Cannot open file %s check if file exist and you have access to him",

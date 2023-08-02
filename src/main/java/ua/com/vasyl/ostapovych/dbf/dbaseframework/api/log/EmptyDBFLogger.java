@@ -2,7 +2,7 @@ package ua.com.vasyl.ostapovych.dbf.dbaseframework.api.log;
 
 class EmptyDBFLogger implements DBFLogger {
     @Override
-    public void fatal(String messages, Object... params) {
+    public void fatal(String messages, Object ... params) {
         //NOP
     }
 

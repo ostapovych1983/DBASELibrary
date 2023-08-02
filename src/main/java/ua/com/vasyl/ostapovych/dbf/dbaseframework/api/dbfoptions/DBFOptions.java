@@ -66,8 +66,8 @@ public class DBFOptions {
                 "readDeleted=" + readDeleted +
                 ", readCodePageFromTable=" + readCodePageFromTable +
                 ", validateAnotation=" + validateAnotation +
-                ", codePage=" + codePage +
                 ", enebleLog=" + enebleLog +
+                ", codePage=" + codePage +
                 '}';
     }
 }

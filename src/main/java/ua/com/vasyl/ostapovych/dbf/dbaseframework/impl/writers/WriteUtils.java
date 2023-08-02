@@ -450,7 +450,7 @@ final class WriteUtils {
         }
         if (field.getSize() == 1 && value <0){
             logger
-                    .warning("Cannot insert negative value %s in float type field %s with size %d. 0.0 will be written",
+                    .warning("Cannot insert negative value {} in float type field {} with size {}. 0.0 will be written",
                                     value,field.getName(),field.getSize());
             return new byte[]{0};
         }
@@ -521,7 +521,7 @@ final class WriteUtils {
         if (value instanceof Integer) {
             if (field.getSize() == 1 && value.intValue() < 0) {
                 logger
-                        .warning("Cannot insert negative value %s in float type field %s with size {}}. 0.0 will be written",
+                        .warning("Cannot insert negative value {} in float type field {} with size {}. 0.0 will be written",
                                         value, field.getName(), field.getSize());
                 return new byte[]{0};
             }
@@ -529,7 +529,7 @@ final class WriteUtils {
         if (value instanceof Double){
             if (field.getSize() == 1 && value.doubleValue() <0){
                 logger
-                        .warning("Cannot insert negative value %s in float type field %s with size %d. 0.0 will be written",
+                        .warning("Cannot insert negative value {} in float type field {} with size {}. 0.0 will be written",
                                         value,field.getName(),field.getSize());
                 return new byte[]{0};
             }

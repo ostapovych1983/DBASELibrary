@@ -22,7 +22,7 @@ class JULDBFLogger implements DBFLogger {
     }
 
     @Override
-    public void fatal(String messages, Object... params) {
+    public void fatal(String messages, Object ... params) {
         getLogger(loggerName).log(Level.SEVERE,messages,params);
     }
 
