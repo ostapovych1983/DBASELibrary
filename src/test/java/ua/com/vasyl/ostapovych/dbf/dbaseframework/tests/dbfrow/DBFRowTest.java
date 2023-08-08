@@ -8,7 +8,6 @@ import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.DBFRow;
 
 import java.util.UUID;
 
-import static ua.com.vasyl.ostapovych.dbf.dbaseframework.tests.dbfrow.RowTestHelper.prepareFieldMap;
 import ua.com.vasyl.ostapovych.dbf.dbaseframework.api.dbf.exceptions.*;
 
 public class DBFRowTest {
@@ -17,7 +16,7 @@ public class DBFRowTest {
 
     @Before
     public void init(){
-        row = new DBFRow(prepareFieldMap(),false);
+        row = new DBFRow(RowTestHelper.prepareFieldMap(),false);
     }
 
     @Test

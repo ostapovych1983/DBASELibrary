@@ -9,9 +9,11 @@ public class DBFOptions {
 
     private boolean validateAnotation = false;
 
-    private DBFCodePage codePage;
-
     private boolean enebleLog;
+
+    private int readPackageSizeToThread = 5000;
+
+    private DBFCodePage codePage;
 
     public static DBFOptions defaultOptions() {
         DBFOptions options = new DBFOptions();
@@ -60,6 +62,14 @@ public class DBFOptions {
         this.enebleLog = enebleLog;
     }
 
+    public int getReadPackageSizeToThread() {
+        return readPackageSizeToThread;
+    }
+
+    public void setReadPackageSizeToThread(int readPackageSizeToThread) {
+        this.readPackageSizeToThread = readPackageSizeToThread;
+    }
+
     @Override
     public String toString() {
         return "DBFOptions{" +
@@ -67,6 +77,7 @@ public class DBFOptions {
                 ", readCodePageFromTable=" + readCodePageFromTable +
                 ", validateAnotation=" + validateAnotation +
                 ", enebleLog=" + enebleLog +
+                ", readPackageSizeToThread=" + readPackageSizeToThread +
                 ", codePage=" + codePage +
                 '}';
     }
